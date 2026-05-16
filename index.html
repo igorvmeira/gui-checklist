@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Checklist — Guilherme · MMADV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0d2137;--navy2:#163352;--navy3:#1e4a73;
+  --gold:#b8976a;--gold2:#d4b896;
+  --green:#2d7a4f;--green-bg:#e8f5ee;
+  --bg:#f5f1eb;--white:#fff;
+  --gray1:#f0ede8;--gray2:#e0dbd3;--gray4:#9e9488;--gray6:#6b6359;
+  --r:10px;--tr:0.2s cubic-bezier(.4,0,.2,1);
+  --shadow:0 4px 20px rgba(13,33,55,.09);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--navy);display:flex;min-height:100vh;overflow-x:hidden}
+
+/* SIDEBAR */
+.sb{width:240px;min-height:100vh;background:var(--navy);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:100;box-shadow:4px 0 24px rgba(13,33,55,.15);transition:transform var(--tr)}
+.sb-logo{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:11px}
+.sb-icon{width:38px;height:38px;background:var(--gold);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--navy);flex-shrink:0}
+.sb-title{color:#fff;font-size:13.5px;font-weight:600;line-height:1.2}
+.sb-sub{color:var(--gold2);font-size:10px;font-style:italic}
+.sb-user{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
+.sb-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy3),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.sb-un{font-size:12.5px;font-weight:600;color:#fff;display:block}
+.sb-ur{font-size:10px;color:var(--gold2)}
+.sb-nav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:3px}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;border:none;background:transparent;color:rgba(255,255,255,.55);font-size:12.5px;font-family:'DM Sans',sans-serif;cursor:pointer;text-align:left;width:100%;transition:all var(--tr)}
+.nav-btn:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-btn.on{background:rgba(184,151,106,.15);color:var(--gold2);font-weight:600;border-left:3px solid var(--gold);padding-left:9px}
+.nav-btn i{font-size:16px;width:17px;text-align:center;flex-shrink:0}
+.sb-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.06);font-size:10px;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace}
+
+/* MOBILE */
+.mob-toggle{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--navy);border:none;border-radius:8px;padding:9px;cursor:pointer;flex-direction:column;gap:5px}
+.mob-toggle span{display:block;width:20px;height:2px;background:#fff;border-radius:2px}
+
+/* MAIN */
+.main{margin-left:240px;flex:1;padding:36px 44px;max-width:880px}
+.panel{display:none}.panel.on{display:block;animation:fi .25s ease both}
+@keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+
+/* PANEL HEADER */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:14px;flex-wrap:wrap}
+.ph-title{font-size:28px;font-weight:600;color:var(--navy);line-height:1.15}
+.ph-sub{font-size:12px;color:var(--gray6);margin-top:4px}
+.h-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+
+/* Ring */
+.pr-wrap{position:relative;width:54px;height:54px}
+.pr-svg{width:54px;height:54px;transform:rotate(-90deg)}
+.pr-bg{fill:none;stroke:var(--gray2);stroke-width:5}
+.pr-fill{fill:none;stroke:var(--gold);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .5s ease}
+.pr-lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;font-family:'DM Mono',monospace;color:var(--navy)}
+
+/* Reset */
+.btn-r{padding:7px 16px;border-radius:100px;border:1.5px solid var(--gray2);background:var(--white);font-size:12px;font-weight:600;color:var(--gray6);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all var(--tr)}
+.btn-r:hover{border-color:var(--navy);color:var(--navy)}
+
+/* Sub-tabs */
+.stabs{display:flex;gap:7px;margin-bottom:20px;flex-wrap:wrap}
+.stab{padding:7px 16px;border-radius:100px;border:1.5px solid var(--gray2);background:var(--white);font-size:12.5px;font-weight:400;color:var(--gray6);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all var(--tr)}
+.stab:hover{border-color:var(--navy);color:var(--navy)}
+.stab.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}
+
+/* Period */
+.plabel{font-size:13px;font-weight:600;color:var(--navy2);margin:20px 0 10px;padding-bottom:6px;border-bottom:1.5px solid var(--gray2)}
+.plabel:first-child{margin-top:0}
+
+/* Task card */
+.tc{background:var(--white);border:1.5px solid transparent;border-radius:var(--r);padding:13px 16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:all var(--tr);margin-bottom:10px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.tc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gray2);transition:background var(--tr)}
+.tc:hover{border-color:var(--gray2);transform:translateY(-1px);box-shadow:0 8px 32px rgba(13,33,55,.12)}
+.tc.done{background:var(--green-bg);border-color:rgba(45,122,79,.2)}
+.tc.done::before{background:var(--green)}
+.tc.done .tc-title{text-decoration:line-through;color:var(--gray4)}
+.tc.done .tc-desc{color:var(--gray4)}
+.chk{width:21px;height:21px;border-radius:6px;border:2px solid var(--gray2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);background:var(--white)}
+.tc.done .chk{background:var(--green);border-color:var(--green)}
+.chk-i{color:#fff;font-size:13px;opacity:0;transform:scale(.5);transition:all .18s ease}
+.tc.done .chk-i{opacity:1;transform:scale(1)}
+.tc-body{flex:1;min-width:0}
+.tc-meta{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.tc-time{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:var(--gold);background:rgba(184,151,106,.12);padding:2px 8px;border-radius:100px}
+.tc-tag{font-size:10px;font-weight:600;color:var(--navy2);background:rgba(22,51,82,.08);padding:2px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.4px}
+.tc-title{font-size:13.5px;font-weight:600;color:var(--navy);line-height:1.35;margin-bottom:4px}
+.tc-desc{font-size:12px;color:var(--gray6);line-height:1.5}
+
+/* Histórico */
+.hist-empty{text-align:center;padding:70px 20px;color:var(--gray4)}
+.hist-empty i{font-size:40px;display:block;margin-bottom:14px;opacity:.25}
+.hist-empty p{font-size:13px;line-height:1.7}
+.hcard{background:var(--white);border-radius:var(--r);padding:13px 18px;display:flex;align-items:center;gap:16px;margin-bottom:10px;box-shadow:var(--shadow)}
+.hdate{font-family:'DM Mono',monospace;font-size:11px;color:var(--navy);white-space:nowrap;min-width:96px}
+.hbar-w{flex:1;height:5px;background:var(--gray2);border-radius:100px;overflow:hidden}
+.hbar{height:100%;background:var(--gold);border-radius:100px;transition:width .6s ease}
+.hpct{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--navy);min-width:36px;text-align:right}
+.hcount{font-size:11px;color:var(--gray6);white-space:nowrap}
+
+/* Observações */
+.obs-toggle{display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:none;border:none;cursor:pointer;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--gray4);padding:3px 0;transition:color var(--tr)}
+.obs-toggle:hover{color:var(--navy2)}
+.obs-toggle.has-note{color:var(--gold);font-weight:600}
+.obs-toggle i{font-size:13px}
+.obs-area{display:none;margin-top:8px;border-top:1px dashed var(--gray2);padding-top:10px}
+.obs-area.open{display:block;animation:fi .2s ease both}
+.obs-textarea{width:100%;border:1.5px solid var(--gray2);border-radius:8px;padding:9px 12px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--navy);background:var(--gray1);resize:vertical;min-height:64px;outline:none;transition:border-color var(--tr);line-height:1.55}
+.obs-textarea:focus{border-color:var(--gold);background:var(--white)}
+.obs-textarea::placeholder{color:var(--gray4)}
+.obs-saved{font-size:10px;color:var(--gray4);margin-top:4px;min-height:14px;transition:opacity .3s}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:11px 18px;border-radius:10px;font-size:12.5px;font-weight:500;box-shadow:0 6px 28px rgba(13,33,55,.2);opacity:0;transform:translateY(10px);transition:all .25s ease;pointer-events:none;z-index:999;border-left:4px solid var(--gold)}
+.toast.show{opacity:1;transform:translateY(0)}
+
+@media(max-width:860px){
+  .main{margin-left:0;padding:70px 18px 32px}
+  .mob-toggle{display:flex}
+  .sb{transform:translateX(-100%)}
+  .sb.open{transform:translateX(0)}
+  .overlay{display:none;position:fixed;inset:0;background:rgba(13,33,55,.45);z-index:90}
+  .overlay.show{display:block}
+  .ph-title{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+<button class="mob-toggle" id="mobToggle" aria-label="Menu">
+  <span></span><span></span><span></span>
+</button>
+
+<aside class="sb" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-icon">MM</div>
+    <div>
+      <div class="sb-title">Marcondes Madureira</div>
+      <div class="sb-sub">advogados</div>
+    </div>
+  </div>
+  <div class="sb-user">
+    <div class="sb-av">G</div>
+    <div>
+      <span class="sb-un">Guilherme do Carmo</span>
+      <span class="sb-ur">Supervisor Comercial</span>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <button class="nav-btn on" data-tab="diaria"><i class="ti ti-sun"></i>Rotina Diária</button>
+    <button class="nav-btn" data-tab="semanal"><i class="ti ti-calendar-week"></i>Rituais Semanais</button>
+    <button class="nav-btn" data-tab="mensal"><i class="ti ti-calendar-month"></i>Rituais Mensais</button>
+    <button class="nav-btn" data-tab="kpis"><i class="ti ti-chart-bar"></i>KPIs de Fiscalização</button>
+    <button class="nav-btn" data-tab="relatorios"><i class="ti ti-file-text"></i>Relatórios</button>
+    <button class="nav-btn" data-tab="historico"><i class="ti ti-history"></i>Histórico</button>
+  </nav>
+  <div class="sb-foot">
+    <div id="dateDisp" style="margin-bottom:6px"></div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span class="sync-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#b8976a;flex-shrink:0"></span>
+      <span class="sync-label" style="font-size:10px;color:rgba(255,255,255,.35)">Iniciando...</span>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="panel on" id="tab-diaria">
+    <div class="ph">
+      <div><div class="ph-title">Rotina Diária</div><div class="ph-sub">Segunda a Sexta · 08h–18h</div></div>
+      <div class="h-right">
+        <div class="pr-wrap"><svg class="pr-svg" viewBox="0 0 54 54"><circle class="pr-bg" cx="27" cy="27" r="22"/><circle class="pr-fill" id="rFill" cx="27" cy="27" r="22" stroke-dasharray="138.2" stroke-dashoffset="138.2"/></svg><span class="pr-lbl" id="rPct">0%</span></div>
+        <button class="btn-r" id="resetBtn">Reiniciar dia</button>
+      </div>
+    </div>
+    <div id="dailyList"></div>
+  </div>
+
+  <div class="panel" id="tab-semanal">
+    <div class="ph"><div><div class="ph-title">Rituais Semanais</div><div class="ph-sub">Compromissos fixos por dia da semana</div></div></div>
+    <div class="stabs" id="weekTabs"></div>
+    <div id="weeklyList"></div>
+  </div>
+
+  <div class="panel" id="tab-mensal">
+    <div class="ph"><div><div class="ph-title">Rituais Mensais</div><div class="ph-sub">Obrigações e fechamentos do mês</div></div></div>
+    <div id="monthlyList"></div>
+  </div>
+
+  <div class="panel" id="tab-kpis">
+    <div class="ph"><div><div class="ph-title">KPIs de Fiscalização</div><div class="ph-sub">Indicadores a inspecionar por papel</div></div></div>
+    <div class="stabs" id="kpiTabs"></div>
+    <div id="kpiList"></div>
+  </div>
+
+  <div class="panel" id="tab-relatorios">
+    <div class="ph"><div><div class="ph-title">Relatórios e Entregas</div><div class="ph-sub">Obrigações obrigatórias de entrega</div></div></div>
+    <div id="relList"></div>
+  </div>
+
+  <div class="panel" id="tab-historico">
+    <div class="ph"><div><div class="ph-title">Histórico</div><div class="ph-sub">Progresso acumulado ao longo do tempo</div></div></div>
+    <div id="histList"></div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA={
+  daily:[
+    {id:"d01",time:"08:00–08:15",tag:"Abertura",title:"Abertura Espiritual",desc:"Oração diária com todo o time presencial e remoto."},
+    {id:"d02",time:"08:15–08:30",tag:"Daily",title:"Daily Comercial",desc:"Time completo: ações de ontem, meta do dia, feedback dos closers para as SDRs."},
+    {id:"d03",time:"08:30–09:15",tag:"SDR",title:"Inspeção SDR",desc:"Fiscalização dos atendimentos de Kelly e Izabel. CRM 100% atualizado — zero conversas órfãs."},
+    {id:"d04",time:"09:15–10:00",tag:"Closer",title:"Inspeção Closer",desc:"Atendimentos e CRM de Laís e Júlia. Propostas em aberto, no-show e follow-up pós-reunião."},
+    {id:"d05",time:"10:00–10:45",tag:"Follow-up",title:"Follow-up de Reuniões Recentes",desc:"Verificar follow-up das reuniões de Leo, Malu e Franklin. Cobrar SDR/Social Seller responsável."},
+    {id:"d06",time:"10:45–11:15",tag:"LTV",title:"LTV — ClickUp",desc:"Grupo 'Possível Aumento LTV': closers estão trabalhando leads de upsell/cross-sell?"},
+    {id:"d07",time:"11:15–12:00",tag:"Leads",title:"Limpa de Leads",desc:"Varredura Instagram e WhatsApp — leads sem resposta. Redistribuir e marcar responsável."},
+    {id:"d08",time:"14:00–15:00",tag:"1:1",title:"1:1 / Side-by-Side",desc:"One-a-one rotativo com 1 vendedor. Escuta de gravação ou ao vivo, feedback técnico e plano de ação."},
+    {id:"d09",time:"15:00–16:00",tag:"Pipeline",title:"Planilha e Pipeline",desc:"Atualizar planilha de valores, conferir propostas em aberto e previsão de fechamento."},
+    {id:"d10",time:"16:00–17:00",tag:"CRM",title:"Dashboard e CRM",desc:"Acompanhar dashboard na TV. CRM em tempo real. Identificar quedas e intervir antes do fechamento."},
+    {id:"d11",time:"17:00–17:30",tag:"⚡ OBRIGATÓRIO",title:"Conferência ClickUp",desc:"Todas as vendas de hoje foram lançadas no ClickUp? Nenhuma venda escapa para outro dia."},
+    {id:"d12",time:"17:30–18:00",tag:"Fechamento",title:"Fechamento + Mensagem no Grupo",desc:"Revisar KPIs, registrar pendências, planejar amanhã. Resumo no grupo (vendas, reuniões, destaque)."}
+  ],
+  weekly:{
+    segunda:[
+      {id:"ws1",time:"08:15–09:00",tag:"Abertura de Semana",title:"Daily Ampliada — Abertura de Semana",desc:"Relatório da semana anterior, metas individuais, foco coletivo. Transferir bandeira do Top Performer."},
+      {id:"ws2",time:"14:00–15:00",tag:"1:1 Daniel",title:"1:1 com Daniel (Social Seller)",desc:"Escuta de abordagens em rede e plano semanal de prospecção."}
+    ],
+    terca:[{id:"wt1",time:"14:00–15:00",tag:"1:1 Kelly",title:"1:1 com Kelly (SDR)",desc:"Escuta de qualificações e revisão da taxa de agendamento."}],
+    quarta:[
+      {id:"wq1",time:"14:00–15:00",tag:"⚡ OBRIGATÓRIO",title:"Reunião com Equipe de Tráfego",desc:"Feedback sobre qualidade dos leads, ajuste de criativo, segmentação e copy."},
+      {id:"wq2",time:"15:00–16:00",tag:"1:1 Camila",title:"1:1 com Camila (Social Seller)",desc:"Escuta de abordagens em redes e plano semanal de prospecção."}
+    ],
+    quinta:[
+      {id:"wqu1",time:"14:00–15:00",tag:"Marketing",title:"Reunião com Thallyta (Head de Marketing)",desc:"Posts com melhores leads, assunto mais frequente, temperatura e perfil de renda dos leads."},
+      {id:"wqu2",time:"15:00–16:00",tag:"1:1 Izabel",title:"1:1 com Izabel (SDR)",desc:"Escuta de qualificações e revisão da taxa de agendamento."}
+    ],
+    sexta:[
+      {id:"wsx1",time:"08:30–12:00",tag:"Análise",title:"Análise Consolidada de Métricas",desc:"Métricas de Kelly, Izabel, Daniel, Camila, Laís e Júlia. Feedback escrito a cada um."},
+      {id:"wsx2",time:"14:00–15:00",tag:"1:1 Closer",title:"1:1 Alternado — Laís ou Júlia",desc:"Revisão de pipeline, objeções recorrentes e taxa de fechamento."},
+      {id:"wsx3",time:"15:00–17:00",tag:"⚡ RELATÓRIO",title:"Envio do Relatório Semanal para Malu",desc:"Vendas (recebido e faturado) + produtividade individual de cada vendedor."},
+      {id:"wsx4",time:"17:00–18:00",tag:"Fechamento",title:"Reunião de Fechamento de Semana",desc:"Reconhecimento do destaque, próxima campanha, alinhamento da segunda-feira."}
+    ]
+  },
+  monthly:[
+    {id:"m1",period:"Primeiro Dia Útil",tag:"Relatório Mensal",title:"Envio do Relatório Mensal para Malu",desc:"Reuniões agendadas/realizadas, valor recebido/faturado por vendedor, leads por faixa de renda, KPIs."},
+    {id:"m2",period:"Última Semana",tag:"Planejamento",title:"Avaliação da Campanha com Maria Luisa",desc:"Pesquisa de clima, leitura do momento de vendas, calibração da campanha e gamificação do próximo mês."},
+    {id:"m3",period:"Último Dia Útil",tag:"⚡ OBRIGATÓRIO",title:"Conferência Final do Mês",desc:"Validação planilha × ClickUp × extrato financeiro. Base para cálculo de comissão do time."}
+  ],
+  kpis:{
+    sdr:[
+      {id:"ks1",tag:"SLA",title:"Tempo de Resposta ao Lead",desc:"SLA ideal: menos de 5 minutos em horário comercial."},
+      {id:"ks2",tag:"Qualificação",title:"Qualidade da Qualificação",desc:"Script seguido, dores mapeadas, perfil financeiro identificado."},
+      {id:"ks3",tag:"Conversão",title:"Taxa Lead → Reunião Agendada",desc:"Acompanhar lead recebido versus reunião efetivamente agendada."},
+      {id:"ks4",tag:"No-show",title:"Taxa de Comparecimento",desc:"Monitorar no-show das reuniões agendadas por cada SDR."},
+      {id:"ks5",tag:"CRM",title:"CRM 100% Atualizado",desc:"Zero conversas órfãs — etapa, próximo passo e data de follow-up em cada uma."}
+    ],
+    social:[
+      {id:"kss1",tag:"Volume",title:"Volume de Prospecção Ativa Diária",desc:"Abordagens em Instagram, WhatsApp e indicações."},
+      {id:"kss2",tag:"Resposta",title:"Taxa de Resposta da Primeira Abordagem",desc:"Percentual de retorno nos primeiros contatos enviados."},
+      {id:"kss3",tag:"Funil",title:"Taxa Contato Frio → Reunião",desc:"Contato frio → conversa qualificada → reunião agendada."},
+      {id:"kss4",tag:"Qualidade",title:"Qualidade do Primeiro Contato",desc:"Humanização, escuta ativa e abertura de relação."},
+      {id:"kss5",tag:"LTV",title:"Grupo 'Possível Aumento LTV'",desc:"Leads de upsell/cross-sell sendo trabalhados no ClickUp."}
+    ],
+    closer:[
+      {id:"kc1",tag:"Comparecimento",title:"Taxa de Comparecimento",desc:"Reuniões marcadas que foram efetivamente realizadas."},
+      {id:"kc2",tag:"Fechamento",title:"Taxa de Fechamento",desc:"Conversão reunião realizada → contrato assinado."},
+      {id:"kc3",tag:"Ticket",title:"Ticket Médio Individual",desc:"Valor médio dos contratos fechados por cada closer."},
+      {id:"kc4",tag:"Ciclo",title:"Ciclo de Venda Médio",desc:"Do primeiro contato até o fechamento."},
+      {id:"kc5",tag:"Follow-up",title:"Follow-up Pós-Reunião",desc:"Tempos, canais e frequência do follow-up após cada reunião."},
+      {id:"kc6",tag:"⚡ ClickUp",title:"Lançamento no ClickUp no Mesmo Dia",desc:"Toda venda fechada registrada no ClickUp no dia — sem exceção."}
+    ]
+  },
+  relatorios:[
+    {id:"r1",period:"Diário — até 17:30",tag:"Auto-conferência",title:"Conferência Diária — ClickUp",desc:"Todas as vendas do dia lançadas no mesmo dia. Registro acessível à Malu."},
+    {id:"r2",period:"Semanal — toda Sexta",tag:"Para Malu",title:"Relatório Semanal de Vendas",desc:"Recebido e faturado + produtividade individual de cada vendedor."},
+    {id:"r3",period:"Semanal — toda Quarta",tag:"Para Tráfego",title:"Feedback para Equipe de Tráfego",desc:"Qualidade dos leads, ajuste de criativo e segmentação."},
+    {id:"r4",period:"Semanal — toda Quinta",tag:"Para Marketing",title:"Feedback para Thallyta",desc:"Conteúdo, posts e perfil dos leads recebidos na semana."},
+    {id:"r5",period:"Mensal — 1º Dia Útil",tag:"Para Malu",title:"Relatório Mensal Completo",desc:"Reuniões, valor recebido/faturado, leads por faixa de renda, KPIs gerais."},
+    {id:"r6",period:"Mensal — Último Dia Útil",tag:"⚡ OBRIGATÓRIO",title:"Conferência Final do Mês",desc:"Planilha × ClickUp × extrato financeiro. Base para comissão."}
+  ]
+};
+
+const DAYS=["domingo","segunda","terca","quarta","quinta","sexta","sabado"];
+const DAY_LABELS={segunda:"Segunda",terca:"Terça",quarta:"Quarta",quinta:"Quinta",sexta:"Sexta"};
+const KPI_LABELS={sdr:"SDRs — Kelly e Izabel",social:"Social Sellers — Daniel e Camila",closer:"Closers — Laís e Júlia"};
+const KPI_SHORT={sdr:"SDRs",social:"Social Sellers",closer:"Closers"};
+const today=()=>new Date().toISOString().slice(0,10);
+
+// ── Firebase ──────────────────────────────────────────────────────────────────
+const _fbCfg={
+  apiKey:"AIzaSyDuPJJ1o5oyv30pO_AA7aecJo5xLRqZBrs",
+  authDomain:"guilherme-checklist.firebaseapp.com",
+  projectId:"guilherme-checklist",
+  storageBucket:"guilherme-checklist.firebasestorage.app",
+  messagingSenderId:"999769093676",
+  appId:"1:999769093676:web:193e9c219f65d410984389"
+};
+let _db=null;
+(async()=>{
+  try{
+    const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const {getFirestore}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    _db=getFirestore(initializeApp(_fbCfg));
+    console.log("Firebase OK");
+    updateSync("ok");
+  }catch(e){console.warn("Firebase nao disponivel, usando localStorage",e);updateSync("local");}
+})();
+
+function updateSync(status){
+  const dot=document.querySelector(".sync-dot");
+  const lbl=document.querySelector(".sync-label");
+  if(!dot||!lbl)return;
+  if(status==="ok"){dot.style.background="#2ecc71";lbl.textContent="Firebase sync";}
+  else if(status==="saving"){dot.style.background="#f39c12";lbl.textContent="Salvando...";}
+  else{dot.style.background="#b8976a";lbl.textContent="Local (offline)";}
+}
+
+async function saveLS(key,val){
+  localStorage.setItem(key,JSON.stringify(val));
+  if(!_db)return;
+  updateSync("saving");
+  try{
+    const {doc,setDoc}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    await setDoc(doc(_db,"mmadv",key),{data:val,ts:Date.now()});
+    updateSync("ok");
+  }catch(e){console.warn("Firestore write failed",e);updateSync("local");}
+}
+
+async function LS(key){
+  if(_db){
+    try{
+      const {doc,getDoc}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const snap=await getDoc(doc(_db,"mmadv",key));
+      if(snap.exists()){
+        const val=snap.data().data;
+        localStorage.setItem(key,JSON.stringify(val));
+        return val;
+      }
+    }catch(e){console.warn("Firestore read failed",e);}
+  }
+  return JSON.parse(localStorage.getItem(key)||"{}");
+}
+
+let state={
+  daily:{},weekly:{},monthly:{},kpi:{},rel:{},notes:{},
+  wday:DAYS[new Date().getDay()] in DAY_LABELS?DAYS[new Date().getDay()]:"segunda",
+  krole:"sdr"
+};
+
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400)}
+
+function card(task,checked,onToggle){
+  const d=document.createElement("div");
+  d.className="tc"+(checked?" done":"");
+  const tb=task.time?`<span class="tc-time">${task.time}</span>`:"";
+  const pb=task.period?`<span class="tc-time">${task.period}</span>`:"";
+  const savedNote=state.notes[task.id]||"";
+  const hasNote=savedNote.trim().length>0;
+  d.innerHTML=`<div class="chk"><i class="ti ti-check chk-i"></i></div><div class="tc-body"><div class="tc-meta">${tb}${pb}<span class="tc-tag">${task.tag}</span></div><div class="tc-title">${task.title}</div><div class="tc-desc">${task.desc}</div><button class="obs-toggle${hasNote?' has-note':''}" title="Observações"><i class="ti ti-notes"></i>${hasNote?'Ver observação':'Adicionar observação'}</button><div class="obs-area" id="obs-${task.id}"><textarea class="obs-textarea" placeholder="Anote aqui informações relevantes sobre esta tarefa…" rows="3">${savedNote}</textarea><div class="obs-saved" id="obss-${task.id}"></div></div></div>`;
+  const obsToggle=d.querySelector(".obs-toggle");
+  const obsArea=d.querySelector(".obs-area");
+  const textarea=d.querySelector(".obs-textarea");
+  const savedEl=d.querySelector(`#obss-${task.id}`);
+  obsToggle.onclick=(e)=>{e.stopPropagation();obsArea.classList.toggle("open");if(obsArea.classList.contains("open"))textarea.focus()};
+  let saveTimer=null;
+  textarea.onclick=(e)=>e.stopPropagation();
+  textarea.oninput=()=>{
+    clearTimeout(saveTimer);savedEl.textContent="";
+    saveTimer=setTimeout(()=>{
+      state.notes[task.id]=textarea.value;
+      saveLS("mm_notes",state.notes);
+      const hasN=textarea.value.trim().length>0;
+      obsToggle.className="obs-toggle"+(hasN?" has-note":"");
+      obsToggle.innerHTML=`<i class="ti ti-notes"></i>${hasN?'Ver observação':'Adicionar observação'}`;
+      savedEl.textContent="✓ Salvo";setTimeout(()=>savedEl.textContent="",2000);
+    },600);
+  };
+  d.onclick=(e)=>{if(e.target.closest(".obs-toggle")||e.target.closest(".obs-area"))return;onToggle(task,d)};
+  return d;
+}
+
+function renderDaily(){
+  const el=document.getElementById("dailyList");el.innerHTML="";
+  DATA.daily.forEach(t=>{
+    el.appendChild(card(t,!!state.daily[t.id],(task,c)=>{
+      state.daily[task.id]=!state.daily[task.id];
+      c.classList.toggle("done",state.daily[task.id]);
+      saveLS("mm_d_"+today(),state.daily);
+      updateRing();
+      if(state.daily[task.id])toast("✓ "+task.title);
+      if(DATA.daily.every(x=>state.daily[x.id])){saveHistory();toast("🏆 Rotina 100% concluída!");renderHistorico()}
+    }));
+  });
+  updateRing();
+}
+
+function updateRing(){
+  const done=DATA.daily.filter(t=>state.daily[t.id]).length;
+  const pct=Math.round(done/DATA.daily.length*100);
+  const c=138.2;
+  document.getElementById("rFill").style.strokeDashoffset=c-(c*pct/100);
+  document.getElementById("rPct").textContent=pct+"%";
+}
+
+document.getElementById("resetBtn").onclick=()=>{
+  if(!confirm("Reiniciar o checklist de hoje?"))return;
+  state.daily={};saveLS("mm_d_"+today(),state.daily);renderDaily();toast("Checklist reiniciado");
+};
+
+function renderWeekly(){
+  const el=document.getElementById("weeklyList");el.innerHTML="";
+  const tabs=document.getElementById("weekTabs");tabs.innerHTML="";
+  Object.keys(DAY_LABELS).forEach(day=>{
+    const b=document.createElement("button");
+    b.className="stab"+(day===state.wday?" on":"");
+    b.textContent=DAY_LABELS[day];
+    b.onclick=()=>{state.wday=day;renderWeekly()};
+    tabs.appendChild(b);
+  });
+  (DATA.weekly[state.wday]||[]).forEach(t=>{
+    const k=state.wday+"_"+t.id;
+    el.appendChild(card(t,!!state.weekly[k],(task,c)=>{
+      const key=state.wday+"_"+task.id;
+      state.weekly[key]=!state.weekly[key];
+      c.classList.toggle("done",state.weekly[key]);
+      saveLS("mm_w",state.weekly);
+      if(state.weekly[key])toast("✓ "+task.title);
+    }));
+  });
+}
+
+function renderMonthly(){
+  const el=document.getElementById("monthlyList");el.innerHTML="";
+  const periods=[...new Set(DATA.monthly.map(t=>t.period))];
+  periods.forEach(p=>{
+    const lbl=document.createElement("div");lbl.className="plabel";lbl.textContent=p;el.appendChild(lbl);
+    DATA.monthly.filter(t=>t.period===p).forEach(t=>{
+      el.appendChild(card(t,!!state.monthly[t.id],(task,c)=>{
+        state.monthly[task.id]=!state.monthly[task.id];
+        c.classList.toggle("done",state.monthly[task.id]);
+        saveLS("mm_m",state.monthly);
+        if(state.monthly[task.id])toast("✓ "+task.title);
+      }));
+    });
+  });
+}
+
+function renderKpi(){
+  const el=document.getElementById("kpiList");el.innerHTML="";
+  const tabs=document.getElementById("kpiTabs");tabs.innerHTML="";
+  Object.keys(KPI_SHORT).forEach(role=>{
+    const b=document.createElement("button");
+    b.className="stab"+(role===state.krole?" on":"");
+    b.textContent=KPI_SHORT[role];
+    b.onclick=()=>{state.krole=role;renderKpi()};
+    tabs.appendChild(b);
+  });
+  (DATA.kpis[state.krole]||[]).forEach(t=>{
+    const k=state.krole+"_"+t.id;
+    el.appendChild(card(t,!!state.kpi[k],(task,c)=>{
+      const key=state.krole+"_"+task.id;
+      state.kpi[key]=!state.kpi[key];
+      c.classList.toggle("done",state.kpi[key]);
+      saveLS("mm_k",state.kpi);
+      if(state.kpi[key])toast("✓ "+task.title);
+    }));
+  });
+}
+
+function renderRel(){
+  const el=document.getElementById("relList");el.innerHTML="";
+  const periods=[...new Set(DATA.relatorios.map(t=>t.period))];
+  periods.forEach(p=>{
+    const lbl=document.createElement("div");lbl.className="plabel";lbl.textContent=p;el.appendChild(lbl);
+    DATA.relatorios.filter(t=>t.period===p).forEach(t=>{
+      el.appendChild(card(t,!!state.rel[t.id],(task,c)=>{
+        state.rel[task.id]=!state.rel[task.id];
+        c.classList.toggle("done",state.rel[task.id]);
+        saveLS("mm_r",state.rel);
+        if(state.rel[task.id])toast("✓ "+task.title);
+      }));
+    });
+  });
+}
+
+function saveHistory(){
+  const done=DATA.daily.filter(t=>state.daily[t.id]).length;
+  const all=LS("mm_hist");
+  all[today()]={date:today(),done,total:DATA.daily.length,pct:Math.round(done/DATA.daily.length*100)};
+  saveLS("mm_hist",all);
+}
+
+function renderHistorico(){
+  const el=document.getElementById("histList");el.innerHTML="";
+  const hist=LS("mm_hist");
+  const recs=Object.values(hist).sort((a,b)=>b.date.localeCompare(a.date));
+  if(!recs.length){
+    el.innerHTML=`<div class="hist-empty"><i class="ti ti-history"></i><p>Nenhum registro ainda.<br>Complete a rotina do dia para gerar o histórico.</p></div>`;
+    return;
+  }
+  recs.forEach(r=>{
+    const d=document.createElement("div");d.className="hcard";
+    d.innerHTML=`<div class="hdate">${r.date}</div><div class="hbar-w"><div class="hbar" style="width:${r.pct}%"></div></div><div class="hpct">${r.pct}%</div><div class="hcount">${r.done}/${r.total} tarefas</div>`;
+    el.appendChild(d);
+  });
+}
+
+document.querySelectorAll(".nav-btn").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    const tab=b.dataset.tab;
+    document.getElementById("tab-"+tab).classList.add("on");
+    if(tab==="historico")renderHistorico();
+    document.getElementById("sidebar").classList.remove("open");
+    document.getElementById("overlay").classList.remove("show");
+  };
+});
+
+const mob=document.getElementById("mobToggle");
+const sb=document.getElementById("sidebar");
+const ov=document.getElementById("overlay");
+mob.onclick=()=>{sb.classList.toggle("open");ov.classList.toggle("show")};
+ov.onclick=()=>{sb.classList.remove("open");ov.classList.remove("show")};
+
+document.getElementById("dateDisp").textContent=new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"});
+
+(async()=>{
+  await Promise.all([
+    LS("mm_d_"+today()).then(v=>state.daily=v),
+    LS("mm_w").then(v=>state.weekly=v),
+    LS("mm_m").then(v=>state.monthly=v),
+    LS("mm_k").then(v=>state.kpi=v),
+    LS("mm_r").then(v=>state.rel=v),
+    LS("mm_notes").then(v=>state.notes=v),
+  ]);
+  renderDaily();renderWeekly();renderMonthly();renderKpi();renderRel();
+})();
+</script>
+</body>
+</html>
