@@ -2,7 +2,10 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#0d2137"/>
 <title>Checklist — Guilherme · MMADV</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -30,15 +33,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--navy);dis
 .sb-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--navy3),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
 .sb-un{font-size:12.5px;font-weight:600;color:#fff;display:block}
 .sb-ur{font-size:10px;color:var(--gold2)}
-.sb-nav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:3px}
-.nav-btn{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;border:none;background:transparent;color:rgba(255,255,255,.55);font-size:12.5px;font-family:'DM Sans',sans-serif;cursor:pointer;text-align:left;width:100%;transition:all var(--tr)}
+.sb-nav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:3px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;min-height:44px;border-radius:8px;border:none;background:transparent;color:rgba(255,255,255,.55);font-size:12.5px;font-family:'DM Sans',sans-serif;cursor:pointer;text-align:left;width:100%;transition:all var(--tr)}
 .nav-btn:hover{background:rgba(255,255,255,.07);color:#fff}
 .nav-btn.on{background:rgba(184,151,106,.15);color:var(--gold2);font-weight:600;border-left:3px solid var(--gold);padding-left:9px}
 .nav-btn i{font-size:16px;width:17px;text-align:center;flex-shrink:0}
 .sb-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.06);font-size:10px;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace}
 
 /* MOBILE */
-.mob-toggle{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--navy);border:none;border-radius:8px;padding:9px;cursor:pointer;flex-direction:column;gap:5px}
+.mob-toggle{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--navy);border:none;border-radius:10px;padding:11px;cursor:pointer;flex-direction:column;gap:5px;min-width:44px;min-height:44px;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(13,33,55,.25)}
 .mob-toggle span{display:block;width:20px;height:2px;background:#fff;border-radius:2px}
 
 /* MAIN */
@@ -65,7 +68,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--navy);dis
 
 /* Sub-tabs */
 .stabs{display:flex;gap:7px;margin-bottom:20px;flex-wrap:wrap}
-.stab{padding:7px 16px;border-radius:100px;border:1.5px solid var(--gray2);background:var(--white);font-size:12.5px;font-weight:400;color:var(--gray6);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all var(--tr)}
+.stab{padding:7px 16px;min-height:36px;border-radius:100px;border:1.5px solid var(--gray2);background:var(--white);font-size:12.5px;font-weight:400;color:var(--gray6);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all var(--tr)}
 .stab:hover{border-color:var(--navy);color:var(--navy)}
 .stab.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}
 
@@ -74,7 +77,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--navy);dis
 .plabel:first-child{margin-top:0}
 
 /* Task card */
-.tc{background:var(--white);border:1.5px solid transparent;border-radius:var(--r);padding:13px 16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:all var(--tr);margin-bottom:10px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.tc{background:var(--white);border:1.5px solid transparent;border-radius:var(--r);padding:13px 16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:all var(--tr);margin-bottom:10px;position:relative;overflow:hidden;box-shadow:var(--shadow);-webkit-user-select:none;user-select:none}
 .tc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gray2);transition:background var(--tr)}
 .tc:hover{border-color:var(--gray2);transform:translateY(-1px);box-shadow:0 8px 32px rgba(13,33,55,.12)}
 .tc.done{background:var(--green-bg);border-color:rgba(45,122,79,.2)}
@@ -93,15 +96,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--navy);dis
 .tc-desc{font-size:12px;color:var(--gray6);line-height:1.5}
 
 /* Histórico */
-.hist-empty{text-align:center;padding:70px 20px;color:var(--gray4)}
-.hist-empty i{font-size:40px;display:block;margin-bottom:14px;opacity:.25}
-.hist-empty p{font-size:13px;line-height:1.7}
-.hcard{background:var(--white);border-radius:var(--r);padding:13px 18px;display:flex;align-items:center;gap:16px;margin-bottom:10px;box-shadow:var(--shadow)}
-.hdate{font-family:'DM Mono',monospace;font-size:11px;color:var(--navy);white-space:nowrap;min-width:96px}
-.hbar-w{flex:1;height:5px;background:var(--gray2);border-radius:100px;overflow:hidden}
-.hbar{height:100%;background:var(--gold);border-radius:100px;transition:width .6s ease}
-.hpct{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--navy);min-width:36px;text-align:right}
-.hcount{font-size:11px;color:var(--gray6);white-space:nowrap}
+
 
 /* Observações */
 .obs-toggle{display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:none;border:none;cursor:pointer;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--gray4);padding:3px 0;transition:color var(--tr)}
@@ -115,18 +110,115 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--navy);dis
 .obs-textarea::placeholder{color:var(--gray4)}
 .obs-saved{font-size:10px;color:var(--gray4);margin-top:4px;min-height:14px;transition:opacity .3s}
 
+/* Bottom Nav — mobile only */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--white);border-top:1px solid var(--gray2);padding:6px 4px;padding-bottom:max(6px,env(safe-area-inset-bottom));display:none;align-items:center;justify-content:space-around;gap:2px;box-shadow:0 -4px 20px rgba(13,33,55,.08)}
+.bn-btn{display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:transparent;color:var(--gray4);font-family:'DM Sans',sans-serif;font-size:10px;cursor:pointer;padding:4px 8px;border-radius:8px;transition:all var(--tr);min-width:52px;min-height:44px;justify-content:center}
+.bn-btn i{font-size:20px;line-height:1}
+.bn-btn.on{color:var(--navy)}
+.bn-btn.on i{color:var(--gold)}
+@media(max-width:860px){.bottom-nav{display:flex}.mob-toggle{display:none!important}}
+
+/* ── Histórico expandível ─────────────────────────────────────────────────── */
+.hist-empty{text-align:center;padding:70px 20px;color:var(--gray4)}
+.hist-empty i{font-size:40px;display:block;margin-bottom:14px;opacity:.25}
+.hist-empty p{font-size:13px;line-height:1.7}
+
+.hday{background:var(--white);border-radius:var(--r);margin-bottom:12px;box-shadow:var(--shadow);overflow:hidden;border:1.5px solid transparent;transition:border-color var(--tr)}
+.hday.expanded{border-color:var(--gray2)}
+.hday-header{display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;-webkit-user-select:none;user-select:none}
+.hday-header:active{background:var(--gray1)}
+.hday-date{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--navy);min-width:94px}
+.hday-bar-w{flex:1;height:5px;background:var(--gray2);border-radius:100px;overflow:hidden}
+.hday-bar{height:100%;background:var(--gold);border-radius:100px;transition:width .6s ease}
+.hday-pct{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--navy);min-width:34px;text-align:right}
+.hday-count{font-size:11px;color:var(--gray6);white-space:nowrap}
+.hday-chevron{font-size:16px;color:var(--gray4);transition:transform var(--tr);flex-shrink:0}
+.hday.expanded .hday-chevron{transform:rotate(180deg)}
+
+.hday-body{display:none;border-top:1px solid var(--gray2)}
+.hday.expanded .hday-body{display:block}
+
+.htask{display:flex;align-items:flex-start;gap:10px;padding:11px 18px;border-bottom:1px solid var(--gray1)}
+.htask:last-child{border-bottom:none}
+.htask-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.htask-dot.done{background:var(--green)}
+.htask-dot.pend{background:var(--gray2)}
+.htask-info{flex:1;min-width:0}
+.htask-title{font-size:12.5px;font-weight:500;color:var(--navy);line-height:1.3;margin-bottom:2px}
+.htask-title.pend{color:var(--gray4);text-decoration:line-through}
+.htask-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold)}
+.htask-note{margin-top:6px;background:rgba(184,151,106,.08);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:6px 10px;font-size:11.5px;color:var(--gray6);line-height:1.5;white-space:pre-wrap}
+.htask-note-label{font-size:10px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+
 /* Toast */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:11px 18px;border-radius:10px;font-size:12.5px;font-weight:500;box-shadow:0 6px 28px rgba(13,33,55,.2);opacity:0;transform:translateY(10px);transition:all .25s ease;pointer-events:none;z-index:999;border-left:4px solid var(--gold)}
 .toast.show{opacity:1;transform:translateY(0)}
 
+/* ── iOS / Safari fixes ─────────────────────────────────────────────────────── */
+*{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+input,textarea,button{-webkit-appearance:none;appearance:none}
+.obs-textarea{-webkit-appearance:none;font-size:16px!important} /* evita zoom no iOS */
+
+/* ── Tablet / Mobile ────────────────────────────────────────────────────────── */
 @media(max-width:860px){
-  .main{margin-left:0;padding:70px 18px 32px}
+  body{display:block}
+  .main{margin-left:0;padding:20px 16px 110px;max-width:100%}
   .mob-toggle{display:flex}
-  .sb{transform:translateX(-100%)}
+  .sb{transform:translateX(-100%);width:280px}
   .sb.open{transform:translateX(0)}
   .overlay{display:none;position:fixed;inset:0;background:rgba(13,33,55,.45);z-index:90}
   .overlay.show{display:block}
   .ph-title{font-size:22px}
+  .ph{margin-bottom:18px}
+  .stabs{gap:6px}
+  .stab{padding:6px 12px;font-size:12px}
+  .tc{padding:12px 13px}
+  .tc-title{font-size:13px}
+  .tc-desc{font-size:11.5px}
+  .hcard{flex-wrap:wrap;gap:8px}
+  .hdate{min-width:auto;font-size:10px}
+  .toast{bottom:16px;right:12px;left:12px;text-align:center}
+}
+
+/* ── iPhone (portrait) ──────────────────────────────────────────────────────── */
+@media(max-width:430px){
+  .main{padding:60px 12px 90px}
+  .ph-title{font-size:20px}
+  .panel-header{gap:10px}
+  .h-right{gap:8px}
+  .pr-wrap{width:46px;height:46px}
+  .pr-svg{width:46px;height:46px}
+  .pr-lbl{font-size:9px}
+  .btn-r{padding:6px 12px;font-size:11px}
+  .tc{padding:11px 12px;gap:10px}
+  .chk{width:19px;height:19px}
+  .tc-time{font-size:9px}
+  .tc-tag{font-size:9px}
+  .tc-title{font-size:12.5px}
+  .tc-desc{font-size:11px}
+  .obs-toggle{font-size:10.5px}
+  .plabel{font-size:12px}
+  .stab{padding:5px 11px;font-size:11.5px}
+  .week-tabs,.kpi-section-tabs{gap:5px}
+}
+
+/* ── Safe area (iPhone com notch / Dynamic Island) ──────────────────────────── */
+@supports(padding:max(0px)){
+  .main{
+    padding-left:max(12px, env(safe-area-inset-left));
+    padding-right:max(12px, env(safe-area-inset-right));
+    padding-bottom:max(90px, calc(env(safe-area-inset-bottom) + 80px));
+  }
+  .mob-toggle{
+    top:max(14px, calc(env(safe-area-inset-top) + 8px));
+    left:max(14px, env(safe-area-inset-left));
+  }
+  .toast{
+    bottom:max(16px, calc(env(safe-area-inset-bottom) + 12px));
+  }
+  .sb{
+    padding-top:env(safe-area-inset-top);
+  }
 }
 </style>
 </head>
@@ -376,6 +468,7 @@ function card(task,checked,onToggle){
     saveTimer=setTimeout(()=>{
       state.notes[task.id]=textarea.value;
       saveLS("mm_notes",state.notes);
+      autoSaveHistory();
       const hasN=textarea.value.trim().length>0;
       obsToggle.className="obs-toggle"+(hasN?" has-note":"");
       obsToggle.innerHTML=`<i class="ti ti-notes"></i>${hasN?'Ver observação':'Adicionar observação'}`;
@@ -394,8 +487,9 @@ function renderDaily(){
       c.classList.toggle("done",state.daily[task.id]);
       saveLS("mm_d_"+today(),state.daily);
       updateRing();
+      autoSaveHistory();
       if(state.daily[task.id])toast("✓ "+task.title);
-      if(DATA.daily.every(x=>state.daily[x.id])){saveHistory();toast("🏆 Rotina 100% concluída!");renderHistorico()}
+      if(DATA.daily.every(x=>state.daily[x.id])){saveHistory();toast("🏆 Rotina 100% concluída!");}
     }));
   });
   updateRing();
@@ -490,40 +584,116 @@ function renderRel(){
   });
 }
 
-function saveHistory(){
-  const done=DATA.daily.filter(t=>state.daily[t.id]).length;
-  const all=LS("mm_hist");
-  all[today()]={date:today(),done,total:DATA.daily.length,pct:Math.round(done/DATA.daily.length*100)};
-  saveLS("mm_hist",all);
+// Salva snapshot completo do dia: status de cada tarefa + anotações
+async function saveHistory(){
+  const dateKey=today();
+  const snapshot={
+    date:dateKey,
+    done:DATA.daily.filter(t=>state.daily[t.id]).length,
+    total:DATA.daily.length,
+    pct:Math.round(DATA.daily.filter(t=>state.daily[t.id]).length/DATA.daily.length*100),
+    tasks:DATA.daily.map(t=>({
+      id:t.id,title:t.title,time:t.time||"",tag:t.tag,
+      done:!!state.daily[t.id],
+      note:state.notes[t.id]||""
+    }))
+  };
+  const all=await LS("mm_hist");
+  all[dateKey]=snapshot;
+  await saveLS("mm_hist",all);
 }
 
-function renderHistorico(){
-  const el=document.getElementById("histList");el.innerHTML="";
-  const hist=LS("mm_hist");
+// Salva snapshot parcial sempre que uma tarefa é marcada (não só quando 100%)
+async function autoSaveHistory(){
+  const dateKey=today();
+  const snapshot={
+    date:dateKey,
+    done:DATA.daily.filter(t=>state.daily[t.id]).length,
+    total:DATA.daily.length,
+    pct:Math.round(DATA.daily.filter(t=>state.daily[t.id]).length/DATA.daily.length*100),
+    tasks:DATA.daily.map(t=>({
+      id:t.id,title:t.title,time:t.time||"",tag:t.tag,
+      done:!!state.daily[t.id],
+      note:state.notes[t.id]||""
+    }))
+  };
+  const all=await LS("mm_hist");
+  all[dateKey]=snapshot;
+  await saveLS("mm_hist",all);
+}
+
+function fmtDate(dateStr){
+  const d=new Date(dateStr+"T12:00:00");
+  return d.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});
+}
+
+async function renderHistorico(){
+  const el=document.getElementById("histList");
+  el.innerHTML=`<div style="text-align:center;padding:30px;color:var(--gray4);font-size:12px">Carregando...</div>`;
+  const hist=await LS("mm_hist");
   const recs=Object.values(hist).sort((a,b)=>b.date.localeCompare(a.date));
+  el.innerHTML="";
   if(!recs.length){
-    el.innerHTML=`<div class="hist-empty"><i class="ti ti-history"></i><p>Nenhum registro ainda.<br>Complete a rotina do dia para gerar o histórico.</p></div>`;
+    el.innerHTML=`<div class="hist-empty"><i class="ti ti-history"></i><p>Nenhum registro ainda.<br>As tarefas marcadas durante o dia são salvas automaticamente aqui.</p></div>`;
     return;
   }
-  recs.forEach(r=>{
-    const d=document.createElement("div");d.className="hcard";
-    d.innerHTML=`<div class="hdate">${r.date}</div><div class="hbar-w"><div class="hbar" style="width:${r.pct}%"></div></div><div class="hpct">${r.pct}%</div><div class="hcount">${r.done}/${r.total} tarefas</div>`;
-    el.appendChild(d);
+  recs.forEach((r,idx)=>{
+    const dayEl=document.createElement("div");
+    dayEl.className="hday"+(idx===0?" expanded":"");
+    const tasks=r.tasks||[];
+    const notesCount=tasks.filter(t=>t.note&&t.note.trim()).length;
+    const notesBadge=notesCount?`<span style="font-size:10px;background:rgba(184,151,106,.15);color:var(--gold);padding:2px 7px;border-radius:100px;font-weight:600;margin-left:6px"><i class="ti ti-notes" style="font-size:11px;vertical-align:-1px"></i> ${notesCount}</span>`:"";
+
+    dayEl.innerHTML=`
+      <div class="hday-header">
+        <div>
+          <div class="hday-date">${r.date}</div>
+          <div style="font-size:10px;color:var(--gray6);margin-top:2px">${fmtDate(r.date)}${notesBadge}</div>
+        </div>
+        <div class="hday-bar-w"><div class="hday-bar" style="width:${r.pct||0}%"></div></div>
+        <div class="hday-pct">${r.pct||0}%</div>
+        <div class="hday-count">${r.done||0}/${r.total||0}</div>
+        <i class="ti ti-chevron-down hday-chevron"></i>
+      </div>
+      <div class="hday-body">
+        ${tasks.length?tasks.map(t=>`
+          <div class="htask">
+            <div class="htask-dot ${t.done?"done":"pend"}"></div>
+            <div class="htask-info">
+              ${t.time?`<div class="htask-time">${t.time}</div>`:""}
+              <div class="htask-title ${t.done?"":"pend"}">${t.title}</div>
+              ${t.note&&t.note.trim()?`
+                <div class="htask-note">
+                  <div class="htask-note-label">Observação</div>
+                  ${t.note.trim()}
+                </div>`:""}
+            </div>
+          </div>`).join("")
+        :`<div style="padding:16px 18px;font-size:12px;color:var(--gray4)">Nenhuma tarefa registrada.</div>`}
+      </div>`;
+
+    dayEl.querySelector(".hday-header").onclick=()=>{
+      dayEl.classList.toggle("expanded");
+    };
+    el.appendChild(dayEl);
   });
 }
 
-document.querySelectorAll(".nav-btn").forEach(b=>{
-  b.onclick=()=>{
-    document.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("on"));
-    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
-    b.classList.add("on");
-    const tab=b.dataset.tab;
-    document.getElementById("tab-"+tab).classList.add("on");
-    if(tab==="historico")renderHistorico();
-    document.getElementById("sidebar").classList.remove("open");
-    document.getElementById("overlay").classList.remove("show");
-  };
-});
+function switchTab(tab){
+  document.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".bn-btn").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(`.nav-btn[data-tab="${tab}"]`).forEach(x=>x.classList.add("on"));
+  document.querySelectorAll(`.bn-btn[data-tab="${tab}"]`).forEach(x=>x.classList.add("on"));
+  document.getElementById("tab-"+tab).classList.add("on");
+  if(tab==="historico")renderHistorico();
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("overlay").classList.remove("show");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+document.querySelectorAll(".nav-btn").forEach(b=>{b.onclick=()=>switchTab(b.dataset.tab)});
+document.querySelectorAll(".bn-btn").forEach(b=>{b.onclick=()=>switchTab(b.dataset.tab)});
 
 const mob=document.getElementById("mobToggle");
 const sb=document.getElementById("sidebar");
@@ -545,5 +715,13 @@ document.getElementById("dateDisp").textContent=new Date().toLocaleDateString("p
   renderDaily();renderWeekly();renderMonthly();renderKpi();renderRel();
 })();
 </script>
+<!-- BOTTOM NAV (mobile only) -->
+<nav class="bottom-nav" id="bottomNav">
+  <button class="bn-btn on" data-tab="diaria"><i class="ti ti-sun"></i><span>Hoje</span></button>
+  <button class="bn-btn" data-tab="semanal"><i class="ti ti-calendar-week"></i><span>Semana</span></button>
+  <button class="bn-btn" data-tab="kpis"><i class="ti ti-chart-bar"></i><span>KPIs</span></button>
+  <button class="bn-btn" data-tab="relatorios"><i class="ti ti-file-text"></i><span>Relatórios</span></button>
+  <button class="bn-btn" data-tab="historico"><i class="ti ti-history"></i><span>Histórico</span></button>
+</nav>
 </body>
 </html>
