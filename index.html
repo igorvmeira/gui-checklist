@@ -133,6 +133,30 @@ body{overflow-x:hidden}
 .obs-textarea::placeholder{color:var(--gray4);font-size:14px}
 .obs-saved{font-size:10px;color:var(--gray4);margin-top:4px;min-height:14px}
 
+/* ── ANEXOS ─────────────────────────────────────────────────────────────── */
+.att-area{margin-top:10px;padding-top:10px;border-top:1px dashed var(--gray2)}
+.att-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.att-item{display:flex;align-items:center;gap:9px;background:var(--gray1);border:1px solid var(--gray2);border-radius:8px;padding:7px 10px;transition:all var(--tr)}
+.att-item:hover{border-color:var(--gold);background:rgba(184,151,106,.06)}
+.att-icon{width:28px;height:28px;background:var(--navy);color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.att-icon.pdf{background:#c0392b}
+.att-icon.xls{background:#1e7e3c}
+.att-icon.doc{background:#2c5aa8}
+.att-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.att-name{font-size:11.5px;font-weight:500;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.att-size{font-size:10px;color:var(--gray6);font-family:'DM Mono',monospace}
+.att-actions{display:flex;gap:2px;flex-shrink:0}
+.att-btn{width:30px;height:30px;border:none;background:transparent;color:var(--gray6);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--tr);font-size:14px;-webkit-tap-highlight-color:transparent}
+.att-btn:hover{background:var(--white);color:var(--navy)}
+.att-btn.del:hover{color:var(--red,#c0392b);background:rgba(192,57,43,.08)}
+.att-upload{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px;border:1.5px dashed var(--gray2);border-radius:8px;background:transparent;color:var(--gray6);font-size:11.5px;cursor:pointer;transition:all var(--tr);font-family:inherit}
+.att-upload:hover{border-color:var(--gold);color:var(--gold);background:rgba(184,151,106,.04)}
+.att-upload i{font-size:14px}
+.att-upload input[type="file"]{display:none}
+.att-loading{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px;color:var(--gold);font-size:11.5px}
+.att-loading i{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 /* ── HISTÓRICO ─────────────────────────────────────────────────────────────── */
 .hist-empty{text-align:center;padding:70px 20px;color:var(--gray4)}
 .hist-empty i{font-size:40px;display:block;margin-bottom:14px;opacity:.25}
@@ -474,10 +498,45 @@ async function LS(key){
 
 // ── Estado ──────────────────────────────────────────────────────────────────
 let state={
-  daily:{},weekly:{},monthly:{},kpi:{},rel:{},notes:{},
+  daily:{},weekly:{},monthly:{},kpi:{},rel:{},notes:{},attachments:{},
   wday:DAYS[new Date().getDay()] in DAY_LABELS?DAYS[new Date().getDay()]:"segunda",
   krole:"sdr"
 };
+
+// ── Anexos: helpers ────────────────────────────────────────────────────────
+const MAX_FILE_SIZE=750*1024; // 750KB
+
+function fmtFileSize(b){
+  if(b<1024)return b+" B";
+  if(b<1024*1024)return (b/1024).toFixed(1)+" KB";
+  return (b/1024/1024).toFixed(2)+" MB";
+}
+
+function getFileIcon(name){
+  const ext=(name.split(".").pop()||"").toLowerCase();
+  if(ext==="pdf")return {cls:"pdf",icon:"ti-file-type-pdf"};
+  if(["xls","xlsx","csv"].includes(ext))return {cls:"xls",icon:"ti-file-type-xls"};
+  if(["doc","docx"].includes(ext))return {cls:"doc",icon:"ti-file-type-doc"};
+  return {cls:"",icon:"ti-file"};
+}
+
+function fileToBase64(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result);
+    r.onerror=rej;
+    r.readAsDataURL(file);
+  });
+}
+
+function downloadAttachment(att){
+  const a=document.createElement("a");
+  a.href=att.data;
+  a.download=att.name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
 
 // ── Utilitários ─────────────────────────────────────────────────────────────
 function toast(msg){
@@ -493,19 +552,37 @@ function card(task,checked,onToggle){
   const tb=task.time?`<span class="tc-time">${task.time}</span>`:"";
   const pb=task.period?`<span class="tc-time">${task.period}</span>`:"";
   const savedNote=state.notes[task.id]||"";
+  const atts=state.attachments[task.id]||[];
   const hasNote=savedNote.trim().length>0;
+  const hasAtt=atts.length>0;
+  const hasContent=hasNote||hasAtt;
+
+  // Label do botão considerando notas + anexos
+  let btnLabel="Adicionar observação";
+  if(hasNote&&hasAtt)btnLabel=`Ver observação · ${atts.length} anexo${atts.length>1?"s":""}`;
+  else if(hasNote)btnLabel="Ver observação";
+  else if(hasAtt)btnLabel=`Ver ${atts.length} anexo${atts.length>1?"s":""}`;
+
   d.innerHTML=`
     <div class="chk"><i class="ti ti-check chk-i"></i></div>
     <div class="tc-body">
       <div class="tc-meta">${tb}${pb}<span class="tc-tag">${task.tag}</span></div>
       <div class="tc-title">${task.title}</div>
       <div class="tc-desc">${task.desc}</div>
-      <button class="obs-toggle${hasNote?" has-note":""}" type="button">
-        <i class="ti ti-notes"></i>${hasNote?"Ver observação":"Adicionar observação"}
+      <button class="obs-toggle${hasContent?" has-note":""}" type="button">
+        <i class="ti ti-notes"></i>${btnLabel}
       </button>
       <div class="obs-area" id="obs-${task.id}">
         <textarea class="obs-textarea" placeholder="Anote informações relevantes sobre esta tarefa…" rows="3">${savedNote}</textarea>
         <div class="obs-saved" id="obss-${task.id}"></div>
+        <div class="att-area">
+          <div class="att-list" id="att-list-${task.id}"></div>
+          <label class="att-upload">
+            <i class="ti ti-paperclip"></i>
+            <span>Anexar PDF, Excel ou documento</span>
+            <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg" id="att-input-${task.id}"/>
+          </label>
+        </div>
       </div>
     </div>`;
 
@@ -513,6 +590,103 @@ function card(task,checked,onToggle){
   const obsArea=d.querySelector(".obs-area");
   const textarea=d.querySelector(".obs-textarea");
   const savedEl=d.querySelector(`#obss-${task.id}`);
+  const attList=d.querySelector(`#att-list-${task.id}`);
+  const attInput=d.querySelector(`#att-input-${task.id}`);
+  const attUploadLabel=d.querySelector(".att-upload");
+
+  // Renderiza lista de anexos
+  function renderAttachments(){
+    const list=state.attachments[task.id]||[];
+    attList.innerHTML="";
+    list.forEach((att,idx)=>{
+      const ic=getFileIcon(att.name);
+      const item=document.createElement("div");
+      item.className="att-item";
+      item.innerHTML=`
+        <div class="att-icon ${ic.cls}"><i class="ti ${ic.icon}"></i></div>
+        <div class="att-info">
+          <div class="att-name">${att.name}</div>
+          <div class="att-size">${fmtFileSize(att.size)}</div>
+        </div>
+        <div class="att-actions">
+          <button class="att-btn" type="button" title="Baixar" data-act="dl"><i class="ti ti-download"></i></button>
+          <button class="att-btn del" type="button" title="Remover" data-act="del"><i class="ti ti-trash"></i></button>
+        </div>`;
+      item.querySelector('[data-act="dl"]').addEventListener("click",e=>{
+        e.stopPropagation();
+        downloadAttachment(att);
+      });
+      item.querySelector('[data-act="del"]').addEventListener("click",async e=>{
+        e.stopPropagation();
+        if(!confirm(`Remover "${att.name}"?`))return;
+        state.attachments[task.id].splice(idx,1);
+        if(state.attachments[task.id].length===0)delete state.attachments[task.id];
+        await saveLS("mm_att",state.attachments);
+        renderAttachments();
+        refreshToggleLabel();
+        toast("Anexo removido");
+      });
+      attList.appendChild(item);
+    });
+  }
+
+  function refreshToggleLabel(){
+    const note=(state.notes[task.id]||"").trim();
+    const list=state.attachments[task.id]||[];
+    const hN=note.length>0,hA=list.length>0;
+    let lbl="Adicionar observação";
+    if(hN&&hA)lbl=`Ver observação · ${list.length} anexo${list.length>1?"s":""}`;
+    else if(hN)lbl="Ver observação";
+    else if(hA)lbl=`Ver ${list.length} anexo${list.length>1?"s":""}`;
+    obsToggle.className="obs-toggle"+((hN||hA)?" has-note":"");
+    obsToggle.innerHTML=`<i class="ti ti-notes"></i>${lbl}`;
+  }
+
+  // Upload de arquivo
+  attInput.addEventListener("change",async e=>{
+    const file=e.target.files[0];
+    if(!file)return;
+
+    if(file.size>MAX_FILE_SIZE){
+      alert(`Arquivo muito grande (${fmtFileSize(file.size)}).\nLimite: ${fmtFileSize(MAX_FILE_SIZE)}.\n\nPara arquivos maiores, suba no Google Drive e cole o link na observação.`);
+      attInput.value="";
+      return;
+    }
+
+    // Mostrar loading
+    attUploadLabel.innerHTML=`<i class="ti ti-loader"></i><span>Processando ${file.name}…</span>`;
+    attUploadLabel.classList.add("att-loading");
+
+    try{
+      const base64=await fileToBase64(file);
+      if(!state.attachments[task.id])state.attachments[task.id]=[];
+      state.attachments[task.id].push({
+        name:file.name,
+        size:file.size,
+        type:file.type,
+        data:base64,
+        uploadedAt:Date.now()
+      });
+      await saveLS("mm_att",state.attachments);
+      autoSaveHistory();
+      renderAttachments();
+      refreshToggleLabel();
+      toast(`✓ ${file.name} anexado`);
+    }catch(err){
+      console.error(err);
+      alert("Erro ao anexar arquivo.");
+    }finally{
+      attUploadLabel.classList.remove("att-loading");
+      attUploadLabel.innerHTML=`<i class="ti ti-paperclip"></i><span>Anexar PDF, Excel ou documento</span><input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg" id="att-input-${task.id}"/>`;
+      // Re-bindar input após troca de innerHTML
+      const newInput=attUploadLabel.querySelector("input");
+      newInput.addEventListener("change",attInput.onchange);
+      attInput.value="";
+    }
+  });
+
+  // Inicializa lista
+  renderAttachments();
 
   obsToggle.addEventListener("click",e=>{
     e.stopPropagation();
@@ -528,9 +702,7 @@ function card(task,checked,onToggle){
       state.notes[task.id]=textarea.value;
       await saveLS("mm_notes",state.notes);
       autoSaveHistory();
-      const hasN=textarea.value.trim().length>0;
-      obsToggle.className="obs-toggle"+(hasN?" has-note":"");
-      obsToggle.innerHTML=`<i class="ti ti-notes"></i>${hasN?"Ver observação":"Adicionar observação"}`;
+      refreshToggleLabel();
       savedEl.textContent="✓ Salvo";
       setTimeout(()=>savedEl.textContent="",2000);
     },700);
@@ -659,7 +831,13 @@ async function autoSaveHistory(){
     done:DATA.daily.filter(t=>state.daily[t.id]).length,
     total:DATA.daily.length,
     pct:Math.round(DATA.daily.filter(t=>state.daily[t.id]).length/DATA.daily.length*100),
-    tasks:DATA.daily.map(t=>({id:t.id,title:t.title,time:t.time||"",tag:t.tag,done:!!state.daily[t.id],note:state.notes[t.id]||""}))
+    tasks:DATA.daily.map(t=>({
+      id:t.id,title:t.title,time:t.time||"",tag:t.tag,
+      done:!!state.daily[t.id],
+      note:state.notes[t.id]||"",
+      // Histórico guarda apenas metadados dos anexos, não o base64 (economiza espaço)
+      attachments:(state.attachments[t.id]||[]).map(a=>({name:a.name,size:a.size,type:a.type}))
+    }))
   };
   const all=await LS("mm_hist");
   all[key]=snap;
@@ -705,6 +883,7 @@ async function renderHistorico(){
               ${t.time?`<div class="htask-time">${t.time}</div>`:""}
               <div class="htask-title ${t.done?"":"pend"}">${t.title}</div>
               ${t.note&&t.note.trim()?`<div class="htask-note"><div class="htask-note-label">Observação</div>${t.note.trim()}</div>`:""}
+              ${t.attachments&&t.attachments.length?`<div style="margin-top:6px;display:flex;flex-direction:column;gap:4px">${t.attachments.map(a=>{const ic=getFileIcon(a.name);return `<div style="display:flex;align-items:center;gap:8px;background:var(--gray1);padding:5px 9px;border-radius:6px;font-size:11px;color:var(--gray6)"><div class="att-icon ${ic.cls}" style="width:22px;height:22px;font-size:11px"><i class="ti ${ic.icon}"></i></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.name}</span><span style="font-family:'DM Mono',monospace;font-size:9.5px">${fmtFileSize(a.size)}</span></div>`}).join("")}</div>`:""}
             </div>
           </div>`).join("")
         :`<div style="padding:16px 18px;font-size:12px;color:var(--gray4)">Sem tarefas registradas.</div>`}
@@ -747,6 +926,7 @@ document.getElementById("dateDisp").textContent=
     LS("mm_k").then(v=>{if(v)state.kpi=v;}),
     LS("mm_r").then(v=>{if(v)state.rel=v;}),
     LS("mm_notes").then(v=>{if(v)state.notes=v;}),
+    LS("mm_att").then(v=>{if(v)state.attachments=v;}),
   ]);
   renderDaily();renderWeekly();renderMonthly();renderKpi();renderRel();
 })();
